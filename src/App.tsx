@@ -1,9 +1,19 @@
 import React from 'react';
-import {AuthorUi} from "./author/userInterface/authorUI";
+import ReadingArea from "./components/ReadingArea";
+import './styles/App.scss';
+import {Container, Row, Col} from "react-bootstrap";
 
 function App() {
   return (
-    <AuthorUi/>
+    // <AuthorUi/>
+      <Container fluid>
+        <Row>
+          <Col>
+            {/*<Welcome />*/}
+            <ReadingArea/>
+          </Col>
+        </Row>
+      </Container>
   );
 }
 
