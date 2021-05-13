@@ -2,6 +2,7 @@ $welcome-title-color: #293439;
 $create-link-color: #1f423b;
 $section-border-color: #e3e6e7;
 $button-color: #075796;
+$button-color-hover:#217dc4;
 $add-icon-color: #0b53ae;
 $empty-list-color: #546269;
 $list-item-background: #f5f5f5;
@@ -51,6 +52,7 @@ body {
     color: $welcome-title-color;
     border-bottom: 2px solid $welcome-title-color;
     margin-bottom: 20px;
+
   }
 
   .empty-list {
@@ -113,6 +115,7 @@ body {
     text-decoration: underline;
     padding: 5px;
     margin-bottom: 5px;
+    cursor: pointer;
   }
 
   .form-close-btn {
@@ -131,6 +134,11 @@ body {
   .input {
     border:2px solid $input-border-color;
     border-radius: 0;
+    width:100%;
+    padding:4px;
+    background: #fff;
+    outline: none;
+    font-size: .9em;
   }
 
   .form-btn {
@@ -138,6 +146,10 @@ body {
     background: $button-color;
     padding:3px 18px;
     font-size: .9em;
+  }
+
+  .form-btn:hover {
+    background: $button-color-hover;
   }
 
 }
