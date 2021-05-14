@@ -2,6 +2,7 @@ import React from 'react';
 import ReadingArea from "./components/ReadingArea";
 import './styles/App.scss';
 import {Container, Row, Col} from "react-bootstrap";
+import Welcome from "./components/Welcome";
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
       <Container fluid>
         <Row>
           <Col>
-            {/*<Welcome />*/}
+            <Welcome />
             <ReadingArea/>
           </Col>
         </Row>
