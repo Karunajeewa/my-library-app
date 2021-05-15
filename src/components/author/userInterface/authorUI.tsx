@@ -21,6 +21,7 @@ const [error, setError] = React.useState(false);
         setAuthors(authorsTep)
         await swal("Deleted!", "", "success");
         setObjectIdx(null)
+        setShow(false)
     }
 
     /** update Author List*/
@@ -102,7 +103,7 @@ const [error, setError] = React.useState(false);
                                                     </Col>
                                                     <Col>
                                                         <Button size={'sm'} variant={'primary'}
-                                                                onClick={() => setObjectIdx(null)}>No</Button>
+                                                                onClick={() => { setObjectIdx(null); setShow(false);}}>No</Button>
                                                     </Col>
                                                     <Col>
                                                         <Button size={'sm'} variant={'danger'}
@@ -148,7 +149,7 @@ const [error, setError] = React.useState(false);
 
                 <Row>
                     <div className='add-column mt-3'>
-                        <Plus className="add-icon" onClick={() => setIsCloseForm(!isCloseForm)}/>
+                        <Plus className="add-icon" onClick={() => { setIsCloseForm(false); setEnterInput('') ; setObjectIdx(null);}}/>
                         <p className="add-link" >Add Author</p>
                     </div>
                 </Row>
@@ -160,7 +161,8 @@ const [error, setError] = React.useState(false);
                             <label id={'l3'}>{objectIdx !== null ? 'Update Author' : 'Create Author'}</label>
                         </Col>
                         <Col className={'mt-5'}>
-                            <XCircle className="form-close-btn" onClick={()=> setIsCloseForm(!isCloseForm)} />
+                            <XCircle className="form-close-btn"
+                                     onClick={()=>{ setIsCloseForm(!isCloseForm); setEnterInput(''); setObjectIdx(null); setError(false)}} />
                         </Col>
 
                 </Row>
