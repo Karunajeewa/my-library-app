@@ -7,7 +7,8 @@ import swal from "sweetalert";
 
 type Props = {
     showForm: Boolean;
-    onClick: () => void;
+    onCloseClick: () => void;
+    onBtnClick: ()=> void;
 }
 
 export const Books = () => {
@@ -20,19 +21,34 @@ export const Books = () => {
     const handleShowForm = () => setShowForm(true);
     const handleHideForm = () => setShowForm(false);
 
-    const [objectIdx,setObjectIdx] = React.useState<any>(null);
+    const [objectIdx, setObjectIdx] = React.useState<any>(null);
     const [enterInput, setEnterInput] = React.useState<any>('');
     const [isCloseForm, setIsCloseForm] = React.useState(true);
     const [error, setError] = React.useState(false);
     const [show, setShow] = React.useState(false);
 
-    const deleteBook = async() =>{
+    const deleteBook = async () => {
         let authorsTep = books.slice();
-        authorsTep.splice(objectIdx,1);
+        authorsTep.splice(objectIdx, 1);
         setBooks(authorsTep)
         await swal("Deleted!", "", "success");
         setObjectIdx(null)
         setShow(false)
+    }
+
+    const createBook = async () => {
+        handleShowForm();
+        let bookTemp = books.slice();
+        if (!bookTemp.includes(enterInput)) {
+            setError(false)
+            bookTemp.push(enterInput)
+            setBooks(bookTemp)
+            setEnterInput('');
+            await swal("Successful!", "Book created!", "success");
+            setIsCloseForm(!isCloseForm);
+        } else {
+            await swal("This Book Already Exist!");
+        }
     }
 
 
@@ -61,7 +77,8 @@ export const Books = () => {
                                     <Row>
                                         <Col xs={10}>{index + 1}. {bookItem.name}</Col>
                                         <Col className="text-warning edit-update-icon"><Edit/></Col>
-                                        <Col className="text-danger edit-update-icon"><Trash2 onClick={() => deleteBook()}/></Col>
+                                        <Col className="text-danger edit-update-icon"><Trash2
+                                            onClick={() => deleteBook()}/></Col>
                                     </Row>
                                 </li>
                             )
@@ -69,13 +86,16 @@ export const Books = () => {
 
                     </ul>
                 </div>
+
+            </Row>
+            }
+            <Row>
                 <div className='add-column mt-3' onClick={handleShowForm}>
                     <Plus className="add-icon"/>
                     <p className="add-link">Add Book</p>
                 </div>
-                <CreateBook showForm={showForm} onClick={handleHideForm}/>
+                <CreateBook showForm={showForm} onBtnClick={createBook} onCloseClick={handleHideForm}/>
             </Row>
-            }
         </Container>
     );
 }
