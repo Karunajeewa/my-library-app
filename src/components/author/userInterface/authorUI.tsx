@@ -87,7 +87,7 @@ const [error, setError] = React.useState(false);
                 {authors.length !== 0 &&
                 <Row>
                     <div>
-                        <ul className={"books-list mt-4"} style={{width:'110%'}}>
+                        <ul className={"books-list authors-li mt-4"} style={{width:'110%'}}>
                             {authors.map((author, index) => {
                                 return (
 
