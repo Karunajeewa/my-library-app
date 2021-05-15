@@ -5,16 +5,18 @@ import {Button, Row, Col, InputGroup, FormControl} from 'react-bootstrap';
 
 type Props = {
     showForm: Boolean;
-    onClick: () => void;
+    onCloseClick: () => void;
+    onBtnClick: ()=> void;
 }
 
-const CreateBook: React.FC<Props> = ({showForm, onClick}) => {
+
+const CreateBook: React.FC<Props> = ({showForm, onBtnClick, onCloseClick}) => {
 
     const form = (
         <div className="mt-4 m-lg-3">
             <Row>
                 <Col xs={8} className="form-title">Create Book</Col>
-                <Col className=" mt-2"><XCircle onClick={onClick} className="form-close-btn"/></Col>
+                <Col className=" mt-2"><XCircle onClick={onCloseClick} className="form-close-btn"/></Col>
             </Row>
             <Row>
                 <Col xs={8} className="input-row">
@@ -25,7 +27,7 @@ const CreateBook: React.FC<Props> = ({showForm, onClick}) => {
                             </div>
                             <InputGroup size="sm" className="mb-3">
                                 <FormControl className="input" aria-label="Small"
-                                             aria-describedby="inputGroup-sizing-sm"/>
+                                             aria-describedby="inputGroup-sizing-sm" />
                             </InputGroup>
                         </div>
                         <div>
@@ -50,7 +52,7 @@ const CreateBook: React.FC<Props> = ({showForm, onClick}) => {
                                 </select>
                             </InputGroup>
                         </div>
-                        <Button className="form-btn" variant="primary">Create</Button>
+                        <Button onClick={onBtnClick} className="form-btn" variant="primary">Create</Button>
                     </form>
                 </Col>
             </Row>
