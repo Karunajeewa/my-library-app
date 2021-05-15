@@ -8,7 +8,7 @@ function App() {
     // <AuthorUi/>
       <Container fluid>
         <Row>
-          <Col >
+          <Col>
             {/*<Welcome />*/}
             <ReadingArea/>
           </Col>
