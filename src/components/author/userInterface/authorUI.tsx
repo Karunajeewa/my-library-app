@@ -1,32 +1,66 @@
 import * as React from 'react';
 import {Row, Col, Container, Form, Button, InputGroup, FormControl,Alert} from 'react-bootstrap';
-import '../styles/main.sass';
+import '../../../styles/main.sass';
 import {Plus, Edit, Trash2, XCircle} from 'react-feather';
+import {Authors} from "../authors";
+import swal from 'sweetalert';
 
-export const AuthorUi : React.FunctionComponent = () => {
+export const AuthorUi : React.FunctionComponent<Authors> = ({AuthorsList}:Authors) => {
 
 const [show, setShow] = React.useState(false);
-const [authors, setAuthors] = React.useState([{name :'Author 1 name', id:0},{name :'Author 2 name', id:1} , {name :'Author 3 name', id:2}]);
+const [authors, setAuthors] = React.useState(AuthorsList);
 const [objectIdx,setObjectIdx] = React.useState<any>(null);
 const [enterInput, setEnterInput] = React.useState<any>('');
 const [isCloseForm, setIsCloseForm] = React.useState(true);
+const [error, setError] = React.useState(false);
 
     /** delete Author List */
-    const deleteAuthor = () =>{
+    const deleteAuthor = async() =>{
         let authorsTep = authors.slice();
         authorsTep.splice(objectIdx,1);
         setAuthors(authorsTep)
+        await swal("Deleted!", "", "success");
         setObjectIdx(null)
     }
 
     /** update Author List*/
-    const updateAuthor = () =>{
-        console.log()
+    const updateAuthor = async () => {
+
         let authorsTemp = authors.slice();
-        authorsTemp[objectIdx].name = enterInput;
-        setAuthors(authorsTemp)
-        setEnterInput('');
-        setObjectIdx(null);
+        if(authorsTemp[objectIdx] !== enterInput ){
+            setError(false)
+            authorsTemp[objectIdx] = enterInput;
+            setAuthors(authorsTemp)
+            setEnterInput('');
+            setObjectIdx(null);
+            await swal("Updated!", "", "success");
+            setIsCloseForm(!isCloseForm);
+
+        }else{
+            await swal("This Author Already Exist!");
+
+        }
+
+
+    }
+
+    /** create Author List*/
+    const createAuthor = async() =>{
+
+        let authorsTemp = authors.slice();
+        if(!authorsTemp.includes(enterInput)){
+            setError(false)
+            authorsTemp.push(enterInput)
+            setAuthors(authorsTemp)
+            setEnterInput('');
+            await swal("Successful!", "Author created!", "success");
+            setIsCloseForm(!isCloseForm);
+
+        }else {
+            await swal("This Author Already Exist!");
+        }
+
+
     }
 
     return(
@@ -53,18 +87,18 @@ const [isCloseForm, setIsCloseForm] = React.useState(true);
                 <Row>
                     <div>
                         <ul className={"books-list mt-4"} style={{width:'110%'}}>
-                            {authors.map((authorItem, index) => {
+                            {authors.map((author, index) => {
                                 return (
 
-                                    <li key ={authorItem.id}>
+                                    <li key ={index}>
                                         {show && objectIdx === index ?
 
                                             <Alert variant="warning">
                                                 <Row>
 
                                                     <Col xs={9}>
-                                                        <label className={'warn-style'}> Do you want to
-                                                            delete {authorItem.name} ? </label>
+                                                        <label> Do you want to
+                                                            delete {author} ? </label>
                                                     </Col>
                                                     <Col>
                                                         <Button size={'sm'} variant={'primary'}
@@ -82,13 +116,13 @@ const [isCloseForm, setIsCloseForm] = React.useState(true);
                                             <Row>
 
                                                 <Col xs={10}>
-                                                    <label >{index + 1}. {authorItem.name}</label>
+                                                    <label >{index + 1}. {author}</label>
                                                 </Col>
                                                 <Col>
                                                     <Edit className={'text-warning edit-update-icon'} onClick={() => {
-                                                        setEnterInput(authorItem.name);
+                                                        setEnterInput(author);
                                                         setObjectIdx(index);
-                                                        setIsCloseForm(!isCloseForm)
+                                                        setIsCloseForm(false)
                                                     }}/>
                                                 </Col>
                                                 <Col>
@@ -138,15 +172,24 @@ const [isCloseForm, setIsCloseForm] = React.useState(true);
                      <Col xs={8} className={'form-row'} >
                           <Form>
                                 <Form.Label className={'input-label mb-0'} >Name of Author</Form.Label>
+
                                 <InputGroup size="sm" className="mb-4">
                                     <FormControl className="input" aria-label="Small"
-                                                 placeholder={enterInput !== '' ? enterInput : "authorName"}
+                                                 value={enterInput}
                                                  onChange={(e)=> setEnterInput(e.target.value)}
                                                  aria-describedby="inputGroup-sizing-sm"
+                                                 style={{borderColor:error && enterInput === '' ? 'red' : '#989898'}}
                                     />
                                 </InputGroup>
+                              {error && enterInput === ''  && <Form.Label className={'input-label mt-0'} style={{color:'red'}} >Please Enter Data Here!</Form.Label>}
                           </Form>
-                          <Button className="form-btn" variant="primary" onClick={()=> enterInput !== '' && updateAuthor()}>Create</Button>
+                          <Button className="form-btn"
+                                  variant="primary"
+                                  onClick={()=> enterInput !== '' ? ( objectIdx !== null ? updateAuthor() : createAuthor() ) : setError(true)}
+                          >
+                              {objectIdx !== null ? 'Update' : 'Create'}
+                          </Button>
+
                      </Col>
 
                 </Row>
