@@ -1,4 +1,5 @@
 
 export  interface  Authors {
-    AuthorsList:Array<String>;
+    AuthorsList : Array<String>;
+
 }

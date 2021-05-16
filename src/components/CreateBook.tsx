@@ -5,16 +5,18 @@ import {Button, Row, Col, InputGroup, FormControl} from 'react-bootstrap';
 
 type Props = {
     showForm: Boolean;
-    onClick: () => void;
+    onClick: (prop:string) => void;
+    onChangeInput: (input:string, key:string) => void;
 }
 
-const CreateBook: React.FC<Props> = ({showForm, onClick}) => {
+const CreateBook: React.FC<Props> = ({showForm, onClick,onChangeInput}) => {
+
 
     const form = (
         <div className="mt-4 m-lg-3">
             <Row>
                 <Col xs={8} className="form-title">Create Book</Col>
-                <Col className=" mt-2"><XCircle onClick={onClick} className="form-close-btn"/></Col>
+                <Col className=" mt-2"><XCircle onClick={() => onClick('close')} className="form-close-btn"/></Col>
             </Row>
             <Row>
                 <Col xs={8} className="input-row">
@@ -25,6 +27,7 @@ const CreateBook: React.FC<Props> = ({showForm, onClick}) => {
                             </div>
                             <InputGroup size="sm" className="mb-3">
                                 <FormControl className="input" aria-label="Small"
+                                             onChange={(e)=> onChangeInput(e.target.value, 'bookName')}
                                              aria-describedby="inputGroup-sizing-sm"/>
                             </InputGroup>
                         </div>
@@ -34,6 +37,7 @@ const CreateBook: React.FC<Props> = ({showForm, onClick}) => {
                             </div>
                             <InputGroup size="sm" className="mb-3">
                                 <FormControl className="input" aria-label="Small"
+                                             onChange={(e)=> onChangeInput(e.target.value, 'price')}
                                              aria-describedby="inputGroup-sizing-sm"/>
                             </InputGroup>
                         </div>
@@ -50,7 +54,7 @@ const CreateBook: React.FC<Props> = ({showForm, onClick}) => {
                                 </select>
                             </InputGroup>
                         </div>
-                        <Button className="form-btn" variant="primary">Create</Button>
+                        <Button className="form-btn" variant="primary" onClick={() => onClick('create')}>Create</Button>
                     </form>
                 </Col>
             </Row>

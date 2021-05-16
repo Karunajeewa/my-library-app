@@ -16,12 +16,14 @@ const [error, setError] = React.useState(false);
 
     /** delete Author List */
     const deleteAuthor = async() =>{
-        let authorsTep = authors.slice();
+
+        const authorsTep = authors.slice();
         authorsTep.splice(objectIdx,1);
         setAuthors(authorsTep)
+        setShow(false)
         await swal("Deleted!", "", "success");
         setObjectIdx(null)
-        setShow(false)
+
     }
 
     /** update Author List*/
@@ -60,9 +62,12 @@ const [error, setError] = React.useState(false);
         }else {
             await swal("This Author Already Exist!");
         }
-
-
     }
+    const handleSubmit = (event:any) => {
+        event.preventDefault();
+        event.stopPropagation();
+        enterInput !== '' ? ( objectIdx !== null ? updateAuthor() : createAuthor() ) : setError(true)
+    };
 
     return(
 
@@ -87,7 +92,7 @@ const [error, setError] = React.useState(false);
                 {authors.length !== 0 &&
                 <Row>
                     <div>
-                        <ul className={"books-list mt-4"} style={{width:'110%'}}>
+                        <ul className={"books-list mt-4"} style={{width:'109%'}}>
                             {authors.map((author, index) => {
                                 return (
 
@@ -155,12 +160,12 @@ const [error, setError] = React.useState(false);
                 </Row>
 
                 { !isCloseForm &&
-                <Row>
+                <Row className={'mt-5'}>
 
-                        <Col xs={8} md={8} className={'mt-5'}>
+                        <Col xs={8} md={8} >
                             <label id={'l3'}>{objectIdx !== null ? 'Update Author' : 'Create Author'}</label>
                         </Col>
-                        <Col className={'mt-5'}>
+                        <Col className={'inline'}>
                             <XCircle className="form-close-btn"
                                      onClick={()=>{ setIsCloseForm(!isCloseForm); setEnterInput(''); setObjectIdx(null); setError(false)}} />
                         </Col>
@@ -172,13 +177,14 @@ const [error, setError] = React.useState(false);
                 <Row>
 
                      <Col xs={8} className={'form-row'} >
-                          <Form>
+                          <Form onSubmit={handleSubmit}>
                                 <Form.Label className={'input-label mb-0'} >Name of Author</Form.Label>
 
                                 <InputGroup size="sm" className="mb-4">
                                     <FormControl className="input" aria-label="Small"
                                                  value={enterInput}
-                                                 onChange={(e)=> setEnterInput(e.target.value)}
+                                                 onChange={(e)=> setEnterInput(e.target.value) }
+
                                                  aria-describedby="inputGroup-sizing-sm"
                                                  style={{borderColor:error && enterInput === '' ? 'red' : '#989898'}}
                                     />
@@ -187,7 +193,7 @@ const [error, setError] = React.useState(false);
                           </Form>
                           <Button className="form-btn"
                                   variant="primary"
-                                  onClick={()=> enterInput !== '' ? ( objectIdx !== null ? updateAuthor() : createAuthor() ) : setError(true)}
+                                  onClick={handleSubmit}
                           >
                               {objectIdx !== null ? 'Update' : 'Create'}
                           </Button>
