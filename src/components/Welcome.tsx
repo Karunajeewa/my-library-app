@@ -16,12 +16,11 @@ const Welcome = () => {
                 </Col>
             </Row>
             <Row>
-                <Col className="img-credit text-end pt-2">
+                <Col className="img-credit text-end">
                     Photo by <a
                     href="https://unsplash.com/@annahunko?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Anna
                     Hunko</a> on <a
                     href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-
                 </Col>
             </Row>
         </div>
