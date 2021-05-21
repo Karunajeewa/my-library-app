@@ -2,26 +2,29 @@ import * as React from 'react';
 import {Row, Col, Container, Form, Button, InputGroup, FormControl, Alert} from 'react-bootstrap';
 import {Plus, Edit, Trash2, XCircle} from 'react-feather';
 import swal from 'sweetalert';
-
-
-export  interface  Books {
+import makeAnimated from 'react-select/animated';
+import Select from 'react-select';
+import {Authors} from "./author/authors";
+export  interface  Book {
 
     BookName:String;
-    ISBN:String;
+    Price:Number;
     Author:String;
 
 }
 export interface BookList{
-    BooksList:Array<Books>;
+    BooksList:Array<Book>;
+    AuthorsList : Array<Authors>;
 }
 
 
-export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) => {
+export const Books: React.FunctionComponent <BookList> = ({BooksList,AuthorsList}: BookList) => {
 
     const [show, setShow] = React.useState(false);
     const [books, setBooks] = React.useState(BooksList);
+    const [authors, setAuthors] = React.useState(AuthorsList);
     const [objectIdx, setObjectIdx] = React.useState<any>(null);
-    const [enterInput, setEnterInput] = React.useState<any>({BookName: '', ISBN: '', Author: ''});
+    const [enterInput, setEnterInput] = React.useState<any>({BookName: '', Price: '', Author: ''});
     const [isCloseForm, setIsCloseForm] = React.useState(true);
     const [error, setError] = React.useState(false);
 
@@ -42,7 +45,7 @@ export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) 
         if (authorsTemp[objectIdx] !== enterInput) {
             setError(false)
             authorsTemp[objectIdx].BookName = enterInput.BookName;
-            authorsTemp[objectIdx].ISBN = enterInput.ISBN;
+            authorsTemp[objectIdx].Price = enterInput.Price;
             authorsTemp[objectIdx].Author = enterInput.Author;
             setBooks([...authorsTemp])
             setEnterInput('');
@@ -81,7 +84,14 @@ export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) 
         event.stopPropagation();
         !Object.values(enterInput).includes('') ? (objectIdx !== null ? updateBook() : createBook()) : setError(true)
     };
-
+    const handleChange = (option:any) => {
+        setEnterInput({
+            BookName: enterInput.BookName,
+            Price: enterInput.Price,
+            Author: option
+        });
+        console.log(enterInput)
+    }
 
     return (
 
@@ -173,7 +183,7 @@ export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) 
                 <div className='add-column mt-3'>
                     <Plus className="add-icon" onClick={() => {
                         setIsCloseForm(false);
-                        setEnterInput({BookName: '', ISBN: '', Author: ''});
+                        setEnterInput({BookName: '', Price: '', Author: ''});
                         setObjectIdx(null);
                     }}/>
                     <p className="add-link">Add Book</p>
@@ -190,7 +200,7 @@ export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) 
                     <XCircle className="form-close-btn"
                              onClick={() => {
                                  setIsCloseForm(!isCloseForm);
-                                 setEnterInput({BookName: '', ISBN: '', Author: ''});
+                                 setEnterInput({BookName: '', Price: '', Author: ''});
                                  setObjectIdx(null);
                                  setError(false)
                              }}/>
@@ -211,7 +221,7 @@ export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) 
                                          value={enterInput.BookName}
                                          onChange={(e) => setEnterInput({
                                              BookName: e.target.value,
-                                             ISBN: enterInput.ISBN,
+                                             Price: enterInput.Price,
                                              Author: enterInput.Author
                                          })}
                                          aria-describedby="inputGroup-sizing-sm"
@@ -222,37 +232,41 @@ export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) 
                         <Form.Label className={'input-label mt-0'} style={{color: 'red'}}>Please Enter Title of the book
                             Here!</Form.Label>}
 
-                        <Form.Label className={'input-label mb-0'}>ISBN</Form.Label>
+                        <Form.Label className={'input-label mb-0'}>Price</Form.Label>
 
                         <InputGroup size="sm" className="mb-3">
                             <FormControl className="input" aria-label="Small"
-                                         value={enterInput.ISBN}
+                                         value={enterInput.Price}
+                                         type={'number'}
+                                         min={0}
                                          onChange={(e) => setEnterInput({
                                              BookName: enterInput.BookName,
-                                             ISBN: e.target.value,
+                                             Price: e.target.value,
                                              Author: enterInput.Author
                                          })}
                                          aria-describedby="inputGroup-sizing-sm"
-                                         style={{borderColor: error && enterInput.ISBN === '' ? 'red' : '#989898'}}
+                                         style={{borderColor: error && enterInput.Price === '' ? 'red' : '#989898'}}
                             />
                         </InputGroup>
-                        {error && enterInput.ISBN === '' &&
-                        <Form.Label className={'input-label mt-0'} style={{color: 'red'}}>Please Enter ISBN
+                        {error && enterInput.Price === '' &&
+                        <Form.Label className={'input-label mt-0'} style={{color: 'red'}}>Please Enter Price
                             Here!</Form.Label>}
 
                         <Form.Label className={'input-label mb-0'}>Author</Form.Label>
 
                         <InputGroup size="sm" className="mb-3">
-                            <FormControl className="input" aria-label="Small"
-                                         value={enterInput.Author}
-                                         onChange={(e) => setEnterInput({
-                                             BookName: enterInput.BookName,
-                                             ISBN: enterInput.ISBN,
-                                             Author: e.target.value
-                                         })}
-                                         aria-describedby="inputGroup-sizing-sm"
-                                         style={{borderColor: error && enterInput.Author === '' ? 'red' : '#989898'}}
-                            />
+                            <Select
+                                className="input row-md-12"
+                                style={{border: 2, borderStyle: 'solid', borderColor: '#989898'}}
+                                aria-describedby="inputGroup-sizing-sm"
+                                components={makeAnimated()}
+                                onChange={ handleChange}
+                                isMulti = {false}
+                                isOptionSelected={enterInput.Author}
+                                options={[{label: 'Author1', value: 'Author1'}, {label: 'Author2', value: 'Author2'}, {
+                                    label: 'Author3',
+                                    value: 'Author3'
+                                }]}/>
                         </InputGroup>
                         {error && enterInput.Author === '' &&
                         <Form.Label className={'input-label mt-0'} style={{color: 'red'}}>Please Enter Author

@@ -7,7 +7,7 @@ const ReadingArea = () => {
         <div>
             <Row className="reading-area">
                 <Col >
-                    <Books BooksList={[]}/>
+                    <Books BooksList={[]} AuthorsList={[]}/>
                 </Col>
                 <Col>
                     <AuthorUi AuthorsList={[]} />
