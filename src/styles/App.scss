@@ -178,6 +178,50 @@ body {
       font-size: 10px;
     }
   }
+  .reading-area {
+    padding: 0 20px;
+    overflow-x: hidden;
+
+    h1 {
+      color: $welcome-title-color;
+      border-bottom: 2px solid $welcome-title-color;
+      margin-bottom: 10px;
+    }
+    .empty-list {
+      font-size: 1em;
+    }
+    .add-link {
+      font-size: 1em;
+      margin-left:0;
+    }
+    #a1{
+      font-size:1.5em;
+      margin: 0 0 5px 5px;
+      width: 100%;
+    }
+    .books-list li {
+      font-size: 1em;
+      padding: 2px;
+      list-style-type: none;
+      overflow: hidden;
+      width: 300px;
+    }
+    .books-list li .edit-update-icon {
+      visibility: hidden;
+    }
+    .form-title {
+      font-size: 1.2em;
+    }
+    .input-label {
+      font-size: .9em;
+    }
+    .input {
+      width: 120%;
+      padding: 4px;
+      font-size:1em;
+    }
+
+  }
 }
 
 // Small devices (landscape phones, 576px and up)
@@ -199,6 +243,62 @@ body {
       font-size: 12px;
     }
   }
+  .reading-area {
+
+    h1 {
+      color: $welcome-title-color;
+      border-bottom: 2px solid $welcome-title-color;
+      margin-bottom: 20px;
+    }
+    .empty-list {
+      font-size: 1.1em;
+    }
+    .add-link {
+      font-size: 1.1em;
+    }
+    #a1{
+      font-size:1.7em;
+      margin: 0 0 5px 5px;
+      width: 100%;
+    }
+    .books-list li {
+      font-size: 1.2em;
+      padding: 0;
+      list-style-type: none;
+      overflow: hidden;
+      width: 280px;
+    }
+    .books-list li .edit-update-icon {
+      visibility: hidden;
+    }
+    .books-list li:hover .edit-update-icon {
+      visibility: visible;
+      padding:0;
+      margin: 0;
+    }
+    .books-list li:hover {
+      display: block;
+    }
+    .edit-update-icon {
+      cursor: pointer;
+    }
+    .books-list :hover {
+      background: $list-item-background;
+    }
+    .form-title {
+      font-size: 1.2em;
+    }
+    .input-label {
+      font-size: 1em;
+    }
+    .input {
+      width: 120%;
+      padding: 4px;
+      font-size:1.1em;
+    }
+
+  }
+
 }
 
 
@@ -217,8 +317,3 @@ body {
   }
 }
 
-
-// Large devices (desktops, 992px and up)
-@media (min-width: 992px) and (max-width: 1199.98px) {
-
-}
