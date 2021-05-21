@@ -1,65 +1,100 @@
-import React, {useState} from 'react';
-import {Edit, Plus, Trash2} from 'react-feather';
-import {Container, Row, Col, Alert, Button} from 'react-bootstrap';
-import CreateBook from "./CreateBook";
+import * as React from 'react';
+import {Row, Col, Container, Form, Button, InputGroup, FormControl, Alert} from 'react-bootstrap';
+import {Plus, Edit, Trash2, XCircle} from 'react-feather';
+import swal from 'sweetalert';
 
-import swal from "sweetalert";
 
-export const Books = () => {
-    const [books, setBooks] = React.useState([
-        {bookName: 'bb 1 name', id: 0, author:'author1' ,price:'100' },
-        {bookName: 'b 2 name', id: 1, author:'author1', price:'200'},
-        {bookName: 'b 3 name', id: 2, author:'author1', price: '300'},
-    ]);
-    const [showForm, setShowForm] = useState(false);
-    const handleShowForm = () => setShowForm(true);
-    const  handleHideForm = () => setShowForm(false);
+export  interface  Books {
 
-    const [objectIdx,setObjectIdx] = React.useState<any>(null);
-    const [enterInput, setEnterInput] = React.useState<any>({});
+    BookName:String;
+    ISBN:String;
+    Author:String;
+
+}
+export interface BookList{
+    BooksList:Array<Books>;
+}
+
+
+export const Books: React.FunctionComponent<BookList> = ({BooksList}: BookList) => {
+
     const [show, setShow] = React.useState(false);
+    const [books, setBooks] = React.useState(BooksList);
+    const [objectIdx, setObjectIdx] = React.useState<any>(null);
+    const [enterInput, setEnterInput] = React.useState<any>({BookName: '', ISBN: '', Author: ''});
+    const [isCloseForm, setIsCloseForm] = React.useState(true);
+    const [error, setError] = React.useState(false);
 
-    const deleteBook = async() =>{
+    /** delete book List */
+    const deleteBook = async () => {
         let authorsTep = books.slice();
-        authorsTep.splice(objectIdx,1);
+        authorsTep.splice(objectIdx, 1);
         setBooks(authorsTep)
-        setShow(!show)
         await swal("Deleted!", "", "success");
         setObjectIdx(null)
+        setShow(false)
+    }
+
+    /** update book List*/
+    const updateBook = async () => {
+
+        let authorsTemp = books.slice();
+        if (authorsTemp[objectIdx] !== enterInput) {
+            setError(false)
+            authorsTemp[objectIdx].BookName = enterInput.BookName;
+            authorsTemp[objectIdx].ISBN = enterInput.ISBN;
+            authorsTemp[objectIdx].Author = enterInput.Author;
+            setBooks([...authorsTemp])
+            setEnterInput('');
+            setObjectIdx(null);
+            await swal("Updated!", "", "success");
+            setIsCloseForm(!isCloseForm);
+
+        } else {
+            await swal("This Book Already Exist!");
+
+        }
+
 
     }
 
-    const handleInput = (input:string, key:string ) => {
+    /** create book List*/
+    const createBook = async () => {
 
-        let getInput = enterInput ;
-        getInput[key] =input
-        setEnterInput(getInput);
+        let authorsTemp = books.slice();
+        if (!authorsTemp.includes(enterInput)) {
+            setError(false)
+            authorsTemp.push(enterInput)
+            setBooks(authorsTemp)
+            setEnterInput('');
+            await swal("Successful!", "Book created!", "success");
+            setIsCloseForm(!isCloseForm);
 
-    }
-
-    const handleSubmit = (prop:string) => {
-
-        if(prop === 'create') {
-            let getInput = enterInput;
-            getInput['id'] = books[books.length - 1].id + 1;
-            getInput['author'] = 'author1';
-
-            let getBooks = books;
-            getBooks.push(getInput)
-            setBooks(getBooks);
-            setEnterInput({})
-        }else{
-            handleHideForm()
+        } else {
+            await swal("This Book Already Exist!");
         }
     }
 
+    const handleSubmit = (event:any) => {
+        console.log("me")
+        event.preventDefault();
+        event.stopPropagation();
+        !Object.values(enterInput).includes('') ? (objectIdx !== null ? updateBook() : createBook()) : setError(true)
+    };
+
+
     return (
+
         <Container>
+
             <Row>
-                <Col>
-                    <label id={'a1'} >Books</label>
+
+                <Col xs={8}>
+                    <label id={'a1'}>Books</label>
                 </Col>
+
             </Row>
+
             {books.length === 0 &&
             <Row>
                 <Col>
@@ -67,14 +102,15 @@ export const Books = () => {
                 </Col>
             </Row>
             }
+
             {books.length !== 0 &&
             <Row>
-                {/*<BookList/>*/}
                 <div>
-                    <ul className="books-list mt-4">
-                        {books.map((bookItem, index) => {
+                    <ul className={"books-list mt-4"} style={{width: '102%'}}>
+                        {books.map((book, index) => {
                             return (
-                                <li key = {index}>
+
+                                <li key={index}>
                                     {show && objectIdx === index ?
 
                                         <Alert variant="warning">
@@ -82,7 +118,7 @@ export const Books = () => {
 
                                                 <Col xs={9}>
                                                     <label> Do you want to
-                                                        delete {bookItem.bookName} ? </label>
+                                                        delete {book.BookName} ? </label>
                                                 </Col>
                                                 <Col>
                                                     <Button size={'sm'} variant={'primary'}
@@ -99,29 +135,142 @@ export const Books = () => {
                                             </Row>
                                         </Alert>
                                         :
+
                                         <Row>
-                                            <Col xs={10}>{index + 1}. {bookItem.bookName}</Col>
-                                            <Col className="text-warning edit-update-icon"><Edit/></Col>
-                                            <Col className="text-danger edit-update-icon"><Trash2
-                                                onClick={() => {
-                                                    setShow(!show);
+
+                                            <Col xs={10}>
+                                                <label>{index + 1}. {book.BookName}</label>
+                                            </Col>
+                                            <Col>
+                                                <Edit className={'text-warning edit-update-icon'} onClick={() => {
+                                                    setEnterInput(book);
                                                     setObjectIdx(index);
-                                                }}/></Col>
+                                                    setIsCloseForm(false)
+                                                }}/>
+                                            </Col>
+                                            <Col>
+                                                <Trash2 className={'text-danger edit-update-icon'}
+                                                        onClick={() => {
+                                                            setShow(!show);
+                                                            setObjectIdx(index);
+                                                        }}
+                                                />
+                                            </Col>
+
                                         </Row>
-                                         }
+
+                                    }
                                 </li>
                             )
-                        })}
 
+                        })}
                     </ul>
                 </div>
-                <div className='add-column mt-3' onClick={handleShowForm}>
-                    <Plus className="add-icon"/>
-                    <p className="add-link">Add Book</p>
-                </div>
-                <CreateBook showForm={showForm} onClick={handleSubmit}  onChangeInput = {handleInput}/>
             </Row>
             }
+
+            <Row>
+                <div className='add-column mt-3'>
+                    <Plus className="add-icon" onClick={() => {
+                        setIsCloseForm(false);
+                        setEnterInput({BookName: '', ISBN: '', Author: ''});
+                        setObjectIdx(null);
+                    }}/>
+                    <p className="add-link">Add Book</p>
+                </div>
+            </Row>
+
+            {!isCloseForm &&
+            <Row>
+
+                <Col xs={8} md={8} className={'mt-5'}>
+                    <label id={'l3'}>{objectIdx !== null ? 'Update Book' : 'Create Book'}</label>
+                </Col>
+                <Col className={'inline mt-5'} >
+                    <XCircle className="form-close-btn"
+                             onClick={() => {
+                                 setIsCloseForm(!isCloseForm);
+                                 setEnterInput({BookName: '', ISBN: '', Author: ''});
+                                 setObjectIdx(null);
+                                 setError(false)
+                             }}/>
+                </Col>
+
+            </Row>
+            }
+
+            {!isCloseForm &&
+            <Row>
+
+                <Col xs={8} className={'form-row'}>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Label className={'input-label mb-0'}>Title of the Book</Form.Label>
+
+                        <InputGroup size="sm" className="mb-3">
+                            <FormControl className="input" aria-label="Small"
+                                         value={enterInput.BookName}
+                                         onChange={(e) => setEnterInput({
+                                             BookName: e.target.value,
+                                             ISBN: enterInput.ISBN,
+                                             Author: enterInput.Author
+                                         })}
+                                         aria-describedby="inputGroup-sizing-sm"
+                                         style={{borderColor: error && enterInput.BookName === '' ? 'red' : '#989898'}}
+                            />
+                        </InputGroup>
+                        {error && enterInput.BookName === '' &&
+                        <Form.Label className={'input-label mt-0'} style={{color: 'red'}}>Please Enter Title of the book
+                            Here!</Form.Label>}
+
+                        <Form.Label className={'input-label mb-0'}>ISBN</Form.Label>
+
+                        <InputGroup size="sm" className="mb-3">
+                            <FormControl className="input" aria-label="Small"
+                                         value={enterInput.ISBN}
+                                         onChange={(e) => setEnterInput({
+                                             BookName: enterInput.BookName,
+                                             ISBN: e.target.value,
+                                             Author: enterInput.Author
+                                         })}
+                                         aria-describedby="inputGroup-sizing-sm"
+                                         style={{borderColor: error && enterInput.ISBN === '' ? 'red' : '#989898'}}
+                            />
+                        </InputGroup>
+                        {error && enterInput.ISBN === '' &&
+                        <Form.Label className={'input-label mt-0'} style={{color: 'red'}}>Please Enter ISBN
+                            Here!</Form.Label>}
+
+                        <Form.Label className={'input-label mb-0'}>Author</Form.Label>
+
+                        <InputGroup size="sm" className="mb-3">
+                            <FormControl className="input" aria-label="Small"
+                                         value={enterInput.Author}
+                                         onChange={(e) => setEnterInput({
+                                             BookName: enterInput.BookName,
+                                             ISBN: enterInput.ISBN,
+                                             Author: e.target.value
+                                         })}
+                                         aria-describedby="inputGroup-sizing-sm"
+                                         style={{borderColor: error && enterInput.Author === '' ? 'red' : '#989898'}}
+                            />
+                        </InputGroup>
+                        {error && enterInput.Author === '' &&
+                        <Form.Label className={'input-label mt-0'} style={{color: 'red'}}>Please Enter Author
+                            Here!</Form.Label>}
+                    </Form>
+                    <Button className="form-btn"
+                            variant="primary"
+                            onClick={handleSubmit}
+                    >
+                        {objectIdx !== null ? 'Update' : 'Create'}
+                    </Button>
+
+                </Col>
+
+            </Row>
+            }
+
         </Container>
-    );
+
+    )
 }

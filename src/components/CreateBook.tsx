@@ -1,18 +1,20 @@
 import React from 'react';
 import {XCircle} from 'react-feather';
-import {Button, Row, Col, InputGroup, FormControl} from 'react-bootstrap';
+import {Button, Row, Col, InputGroup, FormControl, Form} from 'react-bootstrap';
 
-
-type Props = {
-    showForm: Boolean;
+export interface Props  {
+    showForm: Boolean ;
     onClick: (prop:string) => void;
     onChangeInput: (input:string, key:string) => void;
+    enterInput: {bookName:String,price:String,author:String} ;
+    error: boolean;
 }
 
-const CreateBook: React.FC<Props> = ({showForm, onClick,onChangeInput}) => {
+const CreateBook:React.FC<Props> = (props:Props) => {
+let {showForm, onClick,onChangeInput,enterInput,error} = props;
 
-
-    const form = (
+console.log(error && enterInput.bookName === '',"hhhhh")
+      return showForm && (
         <div className="mt-4 m-lg-3">
             <Row>
                 <Col xs={8} className="form-title">Create Book</Col>
@@ -20,31 +22,32 @@ const CreateBook: React.FC<Props> = ({showForm, onClick,onChangeInput}) => {
             </Row>
             <Row>
                 <Col xs={8} className="input-row">
-                    <form>
-                        <div>
-                            <div className="input-label">
-                                Title of the book
-                            </div>
+                    <Form>
+
+                            <Form.Label className={'input-label mb-0'}>Title of the Book</Form.Label>
                             <InputGroup size="sm" className="mb-3">
                                 <FormControl className="input" aria-label="Small"
+                                          //   value = {enterInput.bookName}
+                                             key={'bookName'}
                                              onChange={(e)=> onChangeInput(e.target.value, 'bookName')}
                                              aria-describedby="inputGroup-sizing-sm"/>
                             </InputGroup>
-                        </div>
-                        <div>
-                            <div className="input-label">
-                                ISBN
-                            </div>
+                            {error && enterInput.bookName === ''   &&  <Form.Label className={'input-label'} style={{color:'red'}}>
+                                Enter Book  Name Here
+                            </Form.Label>}
+
+                            <Form.Label className={'input-label mb-0'}>Price</Form.Label>
                             <InputGroup size="sm" className="mb-3">
                                 <FormControl className="input" aria-label="Small"
+                                           //  value = {enterInput.price}
                                              onChange={(e)=> onChangeInput(e.target.value, 'price')}
                                              aria-describedby="inputGroup-sizing-sm"/>
                             </InputGroup>
-                        </div>
-                        <div>
-                            <div className="input-label">
-                                Author
-                            </div>
+                            { error && enterInput.price === '' &&   <Form.Label className={'input-label'} style={{color:'red'}}>
+                                Enter price Here
+                            </Form.Label>}
+
+                            <Form.Label className={'input-label mb-0'}>Author</Form.Label>
                             <InputGroup size="sm" className="mb-3">
                                 <select className="input">
                                     <option>Author 1</option>
@@ -53,19 +56,21 @@ const CreateBook: React.FC<Props> = ({showForm, onClick,onChangeInput}) => {
 
                                 </select>
                             </InputGroup>
-                        </div>
-                        <Button className="form-btn" variant="primary" onClick={() => onClick('create')}>Create</Button>
-                    </form>
+                            { enterInput.author === '' && error &&  <Form.Label className={'input-label'} style={{color:'red'}}>
+                                Select Author Here
+                            </Form.Label>}
+
+                        <Button className="form-btn" variant="primary"
+                                onClick={() => onClick('create')}>
+                            Create
+                        </Button>
+                    </Form>
                 </Col>
             </Row>
         </div>
     );
 
-    return (
-        <div>
-            {showForm ? form : null}
-        </div>
-    );
+
 
 }
 
